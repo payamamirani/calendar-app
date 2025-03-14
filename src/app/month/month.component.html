@@ -1,0 +1,5 @@
+<div class="month-header">
+  <button mat-button (click)="previousMonth()">&#9664;</button>
+  <h4>{{ activeMonth | date : "MMMM yyyy" }}</h4>
+  <button mat-button (click)="nextMonth()">&#9654;</button>
+</div>

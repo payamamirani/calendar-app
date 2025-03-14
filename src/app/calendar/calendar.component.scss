@@ -1,0 +1,30 @@
+.calendar-container {
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  justify-items: center;
+  overflow: hidden;
+}
+
+.calendar-day {
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  box-shadow: none;
+}
+
+.calendar-day.active {
+  color: var(--mat-sys-on-secondary);
+  background-color: var(--mat-sys-on-primary-fixed-variant);
+}
+
+.calendar-day.selected {
+  color: var(--mat-sys-on-secondary);
+  background-color: var(--mat-sys-on-secondary-container);
+}

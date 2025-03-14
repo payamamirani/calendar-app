@@ -1,0 +1,66 @@
+<form
+  *ngIf="appointmentForm"
+  [formGroup]="appointmentForm"
+  (ngSubmit)="onSubmit()"
+>
+  <mat-dialog-content>
+    <h2 mat-dialog-title>New Appointment</h2>
+    <mat-form-field appearance="fill">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" required />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Date</mat-label>
+      <input
+        matInput
+        [matDatepicker]="datePicker"
+        formControlName="date"
+        required
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="datePicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>From Time</mat-label>
+      <input
+        matInput
+        [matTimepicker]="fromTimePicker"
+        formControlName="fromTime"
+        required
+      />
+      <mat-timepicker-toggle matIconSuffix [for]="fromTimePicker" />
+      <mat-timepicker #fromTimePicker />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>To Time</mat-label>
+      <input
+        matInput
+        [matTimepicker]="toTimePicker"
+        formControlName="toTime"
+        required
+      />
+      <mat-timepicker-toggle matIconSuffix [for]="toTimePicker" />
+      <mat-timepicker #toTimePicker />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">No Thanks</button>
+    <button
+      mat-button
+      color="primary"
+      type="submit"
+      [disabled]="appointmentForm.invalid"
+      cdkFocusInitial
+      [mat-dialog-close]="saved()"
+    >
+      Ok
+    </button>
+  </mat-dialog-actions>
+</form>

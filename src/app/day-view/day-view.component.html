@@ -1,0 +1,47 @@
+<table
+  cdkDropList
+  [cdkDropListData]="appointments"
+  (cdkDropListDropped)="drop($event)"
+>
+  <tr *ngFor="let timeSlot of timeSlots">
+    <td>{{ timeSlot.time }}</td>
+    <td (dblclick)="onDoubleClick(timeSlot)">
+      <div
+        cdkDrag
+        [cdkDragDisabled]="!getAppointment(timeSlot)"
+        class="appointment"
+        [class.active]="getAppointment(timeSlot)"
+        [style.height.px]="getAppointmentHeight(getAppointment(timeSlot))"
+        [style.top.px]="getAppointmentTop(getAppointment(timeSlot))"
+        [cdkDragData]="getAppointment(timeSlot)"
+      >
+        <div class="custom-placeholder" *cdkDragPlaceholder></div>
+        <div *ngIf="getAppointment(timeSlot)">
+          {{ getAppointment(timeSlot)!.title }} ({{
+            getAppointment(timeSlot)!.fromTime | date : "HH:mm a"
+          }}
+          - {{ getAppointment(timeSlot)!.toTime | date : "HH:mm a" }}) |
+          {{ getAppointment(timeSlot)!.description ?? "no description" }}
+        </div>
+        <button
+          mat-icon-button
+          *ngIf="getAppointment(timeSlot)"
+          (click)="updateAppointment(getAppointment(timeSlot)!)"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          *ngIf="getAppointment(timeSlot)"
+          (click)="deleteAppointment(getAppointment(timeSlot)!)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<button class="floating" mat-fab color="primary" (click)="addNewAppointment()">
+  <mat-icon>add</mat-icon>
+</button>

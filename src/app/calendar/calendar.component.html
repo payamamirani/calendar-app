@@ -1,0 +1,19 @@
+<div class="calendar-container">
+  <app-month
+    [activeMonth]="activeMonth"
+    (activeMonthChanged)="onActiveMonthChanged($event)"
+  />
+
+  <div class="calendar-grid">
+    <button
+      mat-mini-fab
+      *ngFor="let day of daysInMonth"
+      class="calendar-day"
+      [class.active]="isSameDay(day, today)"
+      [class.selected]="isSameDay(day, selectedDate)"
+      (click)="onDayClick(day)"
+    >
+      <span>{{ formatDate(day) }}</span>
+    </button>
+  </div>
+</div>
