@@ -18,38 +18,12 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './day-view.component.scss',
 })
 export class DayViewComponent extends BaseAppointment {
-  protected hours: string[] = [
-    '12 AM',
-    '1 AM',
-    '2 AM',
-    '3 AM',
-    '4 AM',
-    '5 AM',
-    '6 AM',
-    '7 AM',
-    '8 AM',
-    '9 AM',
-    '10 AM',
-    '11 AM',
-    '12 PM',
-    '1 PM',
-    '2 PM',
-    '3 PM',
-    '4 PM',
-    '5 PM',
-    '6 PM',
-    '7 PM',
-    '8 PM',
-    '9 PM',
-    '10 PM',
-    '11 PM',
-  ];
   protected timeSlots: TimeSlot[] = [];
   protected appointments: Appointment[] = [];
   protected appointmentsMap = new Map<TimeSlot, Appointment>();
 
-  private readonly initialIndicatorTop = 10;
-  private readonly indicatorTopPerHour = 41;
+  private readonly initialTop = 10;
+  private readonly topPerHour = 41;
   private activeDate = new Date();
 
   constructor(private readonly activatedRoute: ActivatedRoute) {
@@ -113,7 +87,7 @@ export class DayViewComponent extends BaseAppointment {
         new Date(appointment.fromTime).valueOf()) /
       3600000;
 
-    return `${(duration * this.indicatorTopPerHour) / 0.5}`;
+    return `${(duration * this.topPerHour) / 0.5}`;
   }
 
   protected getAppointmentTop(appointment?: Appointment | null): string {
@@ -123,7 +97,7 @@ export class DayViewComponent extends BaseAppointment {
 
     const index = this.getTimeSlotIndex(appointment.fromTime);
 
-    return `${this.initialIndicatorTop + index * this.indicatorTopPerHour}`;
+    return `${this.initialTop + index * this.topPerHour}`;
   }
 
   protected updateAppointment(appointment: Appointment): void {
