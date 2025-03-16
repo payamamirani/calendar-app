@@ -79,7 +79,8 @@ export class DayViewComponent extends BaseAppointment {
   }
 
   protected onDoubleClick(timeSlot: TimeSlot): void {
-    this.showAppointmentDialog({ date: this.activeDate, timeSlot: timeSlot });
+    const fromTime = new Date(this.activeDate + ' ' + timeSlot.time);
+    this.showAppointmentDialog({ date: this.activeDate, fromTime });
   }
 
   protected drop(event: CdkDragDrop<Appointment[]>): void {

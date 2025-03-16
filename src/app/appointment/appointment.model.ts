@@ -14,6 +14,7 @@ export interface TimeSlot {
 export interface DialogData {
   saved?: string;
   appointment?: Appointment;
-  timeSlot?: TimeSlot;
   date?: Date;
+  fromTime?: Date;
+  toTime?: Date;
 }

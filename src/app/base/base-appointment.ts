@@ -20,7 +20,7 @@ export abstract class BaseAppointment {
 
   private showDialog(data: DialogData) {
     const dialogRef = this.dialog.open(AppointmentDialogComponent, {
-      width: '600px',
+      width: '40vw',
       data: { ...data, saved: this.saved() },
     });
 
