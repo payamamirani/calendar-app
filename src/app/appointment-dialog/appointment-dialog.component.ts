@@ -52,12 +52,15 @@ export class AppointmentDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const fromTime =
-      this.data.appointment?.fromTime ??
-      new Date(
+    let fromTime: Date | undefined = undefined;
+    if (this.data.appointment?.fromTime) {
+      fromTime = this.data.appointment?.fromTime;
+    } else if (this.data.date?.toDateString() && this.data.timeSlot?.time) {
+      fromTime = new Date(
         this.data.date?.toDateString() + ' ' + this.data.timeSlot?.time
-      ) ??
-      undefined;
+      );
+    }
+
     const date = this.data.appointment?.date ?? this.data.date ?? undefined;
     this.appointmentForm = this.fb.group(
       {
@@ -67,7 +70,7 @@ export class AppointmentDialogComponent implements OnInit {
         toTime: [this.data.appointment?.toTime, Validators.required],
         description: [this.data.appointment?.description],
       },
-      { validators: appointmentDateRangeValidator('fromDate', 'toDate') }
+      { validators: appointmentDateRangeValidator() }
     );
   }
 

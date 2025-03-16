@@ -24,7 +24,7 @@ export class AppointmentService {
   }
 
   private initStorage(): void {
-    let savedAppointments = this.storage.getItem(this.storageKey);
+    const savedAppointments = this.storage.getItem(this.storageKey);
     if (savedAppointments) {
       this.appointments = JSON.parse(savedAppointments);
       this.storageSubject.next(this.appointments);

@@ -1,10 +1,7 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Appointment } from '../appointment/appointment.model';
 
-export function appointmentDateRangeValidator(
-  fromDateKey: string,
-  toDateKey: string
-): ValidatorFn {
+export function appointmentDateRangeValidator(): ValidatorFn {
   return (formGroup: AbstractControl): ValidationErrors | null => {
     const fromDate = (formGroup.value as Appointment).fromTime;
     const toDate = (formGroup.value as Appointment).toTime;

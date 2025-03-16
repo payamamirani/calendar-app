@@ -84,7 +84,7 @@ export class DayViewComponent extends BaseAppointment {
 
   protected drop(event: CdkDragDrop<Appointment[]>): void {
     const originalAppointment = { ...event.item.data } as Appointment;
-    let appointment = event.item.data as Appointment;
+    const appointment = event.item.data as Appointment;
     const duration =
       new Date(appointment.toTime).valueOf() -
       new Date(appointment.fromTime).valueOf();
