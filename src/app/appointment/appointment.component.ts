@@ -69,6 +69,9 @@ export class AppointmentComponent {
     const fromTime = new Date(
       this.date.toDateString() + ' ' + this.timeSlot.time
     );
-    this.newAppointment.emit({ date: this.date, fromTime });
+    const minutesToAdd = 30;
+    const toTime = new Date(fromTime.getTime() + minutesToAdd * 60 * 1000);
+
+    this.newAppointment.emit({ date: this.date, fromTime, toTime });
   }
 }
