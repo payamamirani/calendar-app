@@ -1,5 +1,6 @@
 <div
   cdkDrag
+  cdkDragLockAxis="y"
   class="appointment"
   [cdkDragDisabled]="!appointment"
   [class.disable]="!appointment"
@@ -8,11 +9,7 @@
   [cdkDragData]="appointment"
   (dblclick)="onDoubleClick()"
 >
-  <div
-    class="custom-placeholder"
-    *cdkDragPlaceholder
-    [style.height.px]="getHeight()"
-  ></div>
+  <div class="custom-placeholder" *cdkDragPlaceholder></div>
   @if(appointment){
   <div class="appointment-text">
     {{ appointment.title }} ({{ appointment.fromTime | date : "HH:mm a" }} -
