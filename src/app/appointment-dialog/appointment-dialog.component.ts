@@ -22,7 +22,8 @@ import {
 } from '@angular/material/dialog';
 import { DialogData } from '../appointment/appointment.model';
 import { appointmentDateRangeValidator } from '../validators/dateRange.validator';
-import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import { CdkDrag } from '@angular/cdk/drag-drop';
+import { MoveIconComponent } from '../move-icon/move-icon.component';
 
 @Component({
   selector: 'app-appointment-form',
@@ -30,7 +31,6 @@ import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
   imports: [
     CommonModule,
     CdkDrag,
-    CdkDragHandle,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -40,6 +40,7 @@ import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
     MatDialogActions,
     MatTimepickerModule,
     MatDialogClose,
+    MoveIconComponent,
   ],
   templateUrl: './appointment-dialog.component.html',
   styleUrls: ['./appointment-dialog.component.scss'],
