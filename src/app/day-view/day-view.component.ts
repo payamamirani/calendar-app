@@ -1,7 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { BaseAppointment } from '../base/base-appointment';
-import { Appointment, TimeSlot } from '../appointment/appointment.model';
+import {
+  Appointment,
+  getDateIndexInDay,
+  TimeSlot,
+} from '../appointment/appointment.model';
 import { getDateString } from '../utils/functions';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { ActivatedRoute } from '@angular/router';
@@ -9,11 +13,18 @@ import { map } from 'rxjs';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { AppointmentComponent } from '../appointment/appointment.component';
 
 @Component({
   selector: 'app-day-view',
   standalone: true,
-  imports: [CommonModule, DragDropModule, MatIconModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    DragDropModule,
+    MatIconModule,
+    MatButtonModule,
+    AppointmentComponent,
+  ],
   templateUrl: './day-view.component.html',
   styleUrl: './day-view.component.scss',
 })
@@ -22,26 +33,11 @@ export class DayViewComponent extends BaseAppointment {
   protected appointments: Appointment[] = [];
   protected appointmentsMap = new Map<TimeSlot, Appointment>();
 
-  private readonly initialTop = 10;
-  private readonly topPerHour = 41;
-  private activeDate = new Date();
+  protected activeDate = new Date();
 
   constructor(private readonly activatedRoute: ActivatedRoute) {
     super();
-    this.activatedRoute.params
-      .pipe(
-        map((param) => {
-          const year = param['year'] as number;
-          const month = param['month'] as number;
-          const day = param['day'] as number;
-
-          return new Date(year, month - 1, day, 0, 0, 0);
-        })
-      )
-      .subscribe((date) => {
-        this.activeDate = date;
-        this.reload();
-      });
+    this.initPage();
   }
 
   protected override reload(): void {
@@ -50,11 +46,6 @@ export class DayViewComponent extends BaseAppointment {
     this.appointmentsMap = new Map<TimeSlot, Appointment>();
     this.generateTimeSlots();
     this.loadAppointments();
-  }
-
-  protected onDoubleClick(timeSlot: TimeSlot): void {
-    const fromTime = new Date(this.activeDate + ' ' + timeSlot.time);
-    this.showAppointmentDialog({ date: this.activeDate, fromTime });
   }
 
   protected drop(event: CdkDragDrop<Appointment[]>): void {
@@ -77,52 +68,21 @@ export class DayViewComponent extends BaseAppointment {
     this.reload();
   }
 
-  protected getAppointmentHeight(appointment?: Appointment | null): string {
-    if (!appointment) {
-      return ``;
-    }
+  private initPage() {
+    this.activatedRoute.params
+      .pipe(
+        map((param) => {
+          const year = param['year'] as number;
+          const month = param['month'] as number;
+          const day = param['day'] as number;
 
-    const duration =
-      (new Date(appointment.toTime).valueOf() -
-        new Date(appointment.fromTime).valueOf()) /
-      3600000;
-
-    return `${(duration * this.topPerHour) / 0.5}`;
-  }
-
-  protected getAppointmentTop(appointment?: Appointment | null): string {
-    if (!appointment) {
-      return ``;
-    }
-
-    const index = this.getTimeSlotIndex(appointment.fromTime);
-
-    return `${this.initialTop + index * this.topPerHour}`;
-  }
-
-  protected updateAppointment(appointment: Appointment): void {
-    this.updateAppointmentDialog(appointment);
-  }
-
-  protected deleteAppointment(appointment: Appointment): void {
-    this.appointmentService.delete(appointment);
-    this.reload();
-  }
-
-  protected getAppointment(time: TimeSlot): Appointment | undefined {
-    return this.appointmentsMap.get(time);
-  }
-
-  protected addNewAppointment(): void {
-    this.showAppointmentDialog({ date: this.activeDate });
-  }
-
-  protected onAppointmentDoubleClick(appointment?: Appointment): void {
-    if (!appointment) {
-      return;
-    }
-
-    this.updateAppointment(appointment);
+          return new Date(year, month - 1, day, 0, 0, 0);
+        })
+      )
+      .subscribe((date) => {
+        this.activeDate = date;
+        this.reload();
+      });
   }
 
   private generateTimeSlots(): void {
@@ -149,22 +109,9 @@ export class DayViewComponent extends BaseAppointment {
       this.appointmentsMap = new Map<TimeSlot, Appointment>();
       this.appointments.forEach((appointment) => {
         const timeSlot =
-          this.timeSlots[this.getTimeSlotIndex(appointment.fromTime)];
+          this.timeSlots[getDateIndexInDay(appointment.fromTime)];
         this.appointmentsMap.set(timeSlot, appointment);
       });
     });
-  }
-
-  private getTimeSlotIndex(date: Date): number {
-    const correctDate = new Date(date);
-
-    const hours = correctDate.getHours();
-    const minutes = correctDate.getMinutes();
-
-    const totalMinutes = hours * 60 + minutes;
-
-    const index = Math.floor(totalMinutes / 30);
-
-    return index;
   }
 }

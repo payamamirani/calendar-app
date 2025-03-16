@@ -1,0 +1,51 @@
+.appointment {
+  position: absolute;
+  width: calc(100% - 7rem);
+  height: 41px;
+  padding-left: 10px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  user-select: none;
+  z-index: 500;
+  background-color: var(--mat-sys-inverse-primary);
+  overflow: hidden;
+  cursor: move;
+  border-radius: 5px;
+}
+
+.appointment.disable {
+  background-color: inherit;
+  cursor: inherit;
+  z-index: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.custom-placeholder {
+  background: var(--mat-sys-surface-dim);
+  border-radius: 4px;
+  border: dotted 3px var(--mat-sys-inverse-primary);
+  position: absolute;
+  top: 10px;
+  min-height: 35px;
+  width: calc(100% - 7rem);
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.appointment-text {
+  margin-top: 0.7rem;
+}

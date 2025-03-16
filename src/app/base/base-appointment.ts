@@ -10,11 +10,26 @@ export abstract class BaseAppointment {
   protected readonly appointmentService = inject(AppointmentService);
   protected readonly saved = signal('');
 
-  protected showAppointmentDialog(data?: DialogData): void {
+  protected addNewAppointment(data?: DialogData): void {
+    this.showAppointmentDialog(data);
+  }
+
+  protected updateAppointment(appointment: Appointment): void {
+    this.updateAppointmentDialog(appointment);
+  }
+
+  protected deleteAppointment(appointment: Appointment): void {
+    this.appointmentService.delete(appointment);
+    this.reload();
+  }
+
+  protected abstract reload(): void;
+
+  private showAppointmentDialog(data?: DialogData): void {
     this.showDialog({ ...data });
   }
 
-  protected updateAppointmentDialog(appointment: Appointment): void {
+  private updateAppointmentDialog(appointment: Appointment): void {
     this.showDialog({ appointment });
   }
 
@@ -28,6 +43,4 @@ export abstract class BaseAppointment {
       this.reload();
     });
   }
-
-  protected abstract reload(): void;
 }

@@ -1,0 +1,31 @@
+<div
+  cdkDrag
+  class="appointment"
+  [cdkDragDisabled]="!appointment"
+  [class.disable]="!appointment"
+  [style.height.px]="getHeight()"
+  [style.top.px]="getTop()"
+  [cdkDragData]="appointment"
+  (dblclick)="onDoubleClick()"
+>
+  <div
+    class="custom-placeholder"
+    *cdkDragPlaceholder
+    [style.height.px]="getHeight()"
+  ></div>
+  @if(appointment){
+  <div class="appointment-text">
+    {{ appointment.title }} ({{ appointment.fromTime | date : "HH:mm a" }} -
+    {{ appointment.toTime | date : "HH:mm a" }}) |
+    {{ appointment.description ?? "no description" }}
+  </div>
+  <div>
+    <button mat-icon-button (click)="update()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button (click)="delete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+  }
+</div>
