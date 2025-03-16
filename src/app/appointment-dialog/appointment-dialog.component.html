@@ -1,66 +1,77 @@
-<form
-  *ngIf="appointmentForm"
-  [formGroup]="appointmentForm"
-  (ngSubmit)="onSubmit()"
->
-  <mat-dialog-content>
-    <h2 mat-dialog-title>New Appointment</h2>
-    <mat-form-field appearance="fill">
-      <mat-label>Title</mat-label>
-      <input matInput formControlName="title" required />
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Date</mat-label>
-      <input
-        matInput
-        [matDatepicker]="datePicker"
-        formControlName="date"
-        required
-      />
-      <mat-datepicker-toggle
-        matSuffix
-        [for]="datePicker"
-      ></mat-datepicker-toggle>
-      <mat-datepicker #datePicker></mat-datepicker>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>From Time</mat-label>
-      <input
-        matInput
-        [matTimepicker]="fromTimePicker"
-        formControlName="fromTime"
-        required
-      />
-      <mat-timepicker-toggle matIconSuffix [for]="fromTimePicker" />
-      <mat-timepicker #fromTimePicker />
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>To Time</mat-label>
-      <input
-        matInput
-        [matTimepicker]="toTimePicker"
-        formControlName="toTime"
-        required
-      />
-      <mat-timepicker-toggle matIconSuffix [for]="toTimePicker" />
-      <mat-timepicker #toTimePicker />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description"></textarea>
-    </mat-form-field>
-  </mat-dialog-content>
-  <mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">No Thanks</button>
-    <button
-      mat-button
-      color="primary"
-      type="submit"
-      [disabled]="appointmentForm.invalid"
-      cdkFocusInitial
-      [mat-dialog-close]="saved()"
-    >
-      Ok
-    </button>
-  </mat-dialog-actions>
-</form>
+<div cdkDrag class="dialog-container" cdkDragRootElement=".cdk-overlay-pane">
+  <div class="example-handle" cdkDragHandle>
+    <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+      <path
+        d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"
+      ></path>
+      <path d="M0 0h24v24H0z" fill="none"></path>
+    </svg>
+  </div>
+  <form
+    class="full-width"
+    *ngIf="appointmentForm"
+    [formGroup]="appointmentForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <mat-dialog-content>
+      <h2 mat-dialog-title>New Appointment</h2>
+      <mat-form-field class="full-width">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" required />
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="datePicker"
+          formControlName="date"
+          required
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="datePicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #datePicker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>From Time</mat-label>
+        <input
+          matInput
+          [matTimepicker]="fromTimePicker"
+          formControlName="fromTime"
+          required
+        />
+        <mat-timepicker-toggle matIconSuffix [for]="fromTimePicker" />
+        <mat-timepicker #fromTimePicker />
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>To Time</mat-label>
+        <input
+          matInput
+          [matTimepicker]="toTimePicker"
+          formControlName="toTime"
+          required
+        />
+        <mat-timepicker-toggle matIconSuffix [for]="toTimePicker" />
+        <mat-timepicker #toTimePicker />
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-button (click)="onNoClick()">Cancel</button>
+      <button
+        mat-button
+        color="primary"
+        type="submit"
+        [disabled]="appointmentForm.invalid"
+        cdkFocusInitial
+        [mat-dialog-close]="saved()"
+      >
+        Save
+      </button>
+    </mat-dialog-actions>
+  </form>
+</div>

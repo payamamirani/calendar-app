@@ -12,6 +12,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { AppointmentService } from '../appointment/appointment.service';
+
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -21,12 +22,15 @@ import {
 } from '@angular/material/dialog';
 import { DialogData } from '../appointment/appointment.model';
 import { appointmentDateRangeValidator } from '../validators/dateRange.validator';
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-appointment-form',
   standalone: true,
   imports: [
     CommonModule,
+    CdkDrag,
+    CdkDragHandle,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
