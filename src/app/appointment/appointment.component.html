@@ -1,6 +1,8 @@
 <div
   cdkDrag
   cdkDragLockAxis="y"
+  [matTooltip]="!appointment ? 'Double click to add new appointment' : ''"
+  [matTooltipPosition]="'below'"
   class="appointment"
   [cdkDragDisabled]="!appointment"
   [class.disable]="!appointment"

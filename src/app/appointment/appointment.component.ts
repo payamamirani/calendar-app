@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MoveIconComponent } from '../move-icon/move-icon.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-appointment',
@@ -20,6 +21,7 @@ import { MoveIconComponent } from '../move-icon/move-icon.component';
     MatIconModule,
     MatButtonModule,
     MoveIconComponent,
+    MatTooltipModule,
   ],
   templateUrl: './appointment.component.html',
   styleUrl: './appointment.component.scss',
