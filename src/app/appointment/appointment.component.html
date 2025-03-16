@@ -12,9 +12,12 @@
   <div class="custom-placeholder" *cdkDragPlaceholder></div>
   @if(appointment){
   <div class="appointment-text">
-    {{ appointment.title }} ({{ appointment.fromTime | date : "HH:mm a" }} -
-    {{ appointment.toTime | date : "HH:mm a" }}) |
-    {{ appointment.description ?? "no description" }}
+    <app-move-icon />
+    <div>
+      {{ appointment.title }} ({{ appointment.fromTime | date : "HH:mm a" }} -
+      {{ appointment.toTime | date : "HH:mm a" }}) |
+      {{ appointment.description ?? "no description" }}
+    </div>
   </div>
   <div>
     <button mat-icon-button (click)="update()">
