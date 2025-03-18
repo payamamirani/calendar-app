@@ -60,12 +60,17 @@ export class DayViewComponent extends BaseAppointment {
     );
     appointment.toTime = new Date(appointment.fromTime.valueOf() + duration);
 
-    if (!this.appointmentService.update(appointment)) {
-      appointment.fromTime = originalAppointment.fromTime;
-      appointment.toTime = originalAppointment.toTime;
-    }
-
-    this.reload();
+    this.appointmentService.update(appointment).subscribe({
+      next: () => {
+        this.toastService.show('Appointment updated successfully');
+        this.reload();
+      },
+      error: (err) => {
+        appointment.fromTime = originalAppointment.fromTime;
+        appointment.toTime = originalAppointment.toTime;
+        this.toastService.show(err.message);
+      },
+    });
   }
 
   private initPage() {

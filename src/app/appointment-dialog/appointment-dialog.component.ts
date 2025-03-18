@@ -24,6 +24,8 @@ import { DialogData } from '../appointment/appointment.model';
 import { appointmentDateRangeValidator } from '../validators/dateRange.validator';
 import { CdkDrag } from '@angular/cdk/drag-drop';
 import { MoveIconComponent } from '../move-icon/move-icon.component';
+import { ToastService } from '../base/toast.service';
+import { getDateString, getTimeString } from '../utils/functions';
 
 @Component({
   selector: 'app-appointment-form',
@@ -46,6 +48,7 @@ import { MoveIconComponent } from '../move-icon/move-icon.component';
   styleUrls: ['./appointment-dialog.component.scss'],
 })
 export class AppointmentDialogComponent implements OnInit {
+  protected readonly toastService = inject(ToastService);
   private readonly dialogRef = inject(MatDialogRef<AppointmentDialogComponent>);
   private readonly data = inject<DialogData>(MAT_DIALOG_DATA);
   protected readonly saved = model(this.data.saved);
@@ -80,15 +83,47 @@ export class AppointmentDialogComponent implements OnInit {
   onSubmit(): void {
     if (this.appointmentForm?.valid) {
       if (this.data.appointment) {
-        this.appointmentService.update({
-          id: this.data.appointment.id,
-          ...this.appointmentForm.value,
-        });
+        this.updateAppointment();
       } else {
-        this.appointmentService.add(this.appointmentForm.value);
+        this.addNewAppointment();
       }
       this.appointmentForm.reset();
     }
+  }
+
+  private addNewAppointment(): void {
+    const { model } = this.appointmentForm!.value;
+    model.fromTime = new Date(
+      getDateString(model.date) + ' ' + getTimeString(model.fromTime)
+    );
+    model.toTime = new Date(
+      getDateString(model.date) + ' ' + getTimeString(model.toTime)
+    );
+
+    this.appointmentService.add(model).subscribe({
+      next: () => {
+        this.toastService.show('Appointment added successfully.');
+      },
+      error: (err) => {
+        this.toastService.show(err.message);
+      },
+    });
+  }
+
+  private updateAppointment() {
+    this.appointmentService
+      .update({
+        id: this.data.appointment!.id,
+        ...this.appointmentForm!.value,
+      })
+      .subscribe({
+        next: () => {
+          this.toastService.show('Appointment updated successfully.');
+        },
+        error: (err) => {
+          this.toastService.show(err.message);
+        },
+      });
   }
 
   onNoClick(): void {

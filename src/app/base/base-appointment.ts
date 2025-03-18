@@ -3,9 +3,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { Appointment, DialogData } from '../appointment/appointment.model';
 import { AppointmentDialogComponent } from '../appointment-dialog/appointment-dialog.component';
 import { AppointmentService } from '../appointment/appointment.service';
+import { ToastService } from './toast.service';
 
 @Directive()
 export abstract class BaseAppointment {
+  protected readonly toastService = inject(ToastService);
   private readonly dialog = inject(MatDialog);
   protected readonly appointmentService = inject(AppointmentService);
   protected readonly saved = signal('');
@@ -19,8 +21,14 @@ export abstract class BaseAppointment {
   }
 
   protected deleteAppointment(appointment: Appointment): void {
-    this.appointmentService.delete(appointment);
-    this.reload();
+    this.appointmentService.delete(appointment.id).subscribe({
+      next: () => {
+        this.reload();
+      },
+      error: (err) => {
+        this.toastService.show(err.message);
+      },
+    });
   }
 
   protected abstract reload(): void;

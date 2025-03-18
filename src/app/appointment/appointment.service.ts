@@ -1,26 +1,31 @@
-import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, filter, fromEvent, map, Observable } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import { Appointment } from './appointment.model';
-import { getDateString, getTimeString } from '../utils/functions';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { IService } from '../base/service-interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AppointmentService {
-  private _snackBar = inject(MatSnackBar);
-
+export class AppointmentService implements IService<Appointment>, OnDestroy {
   private readonly storageKey = 'CALENDAR_APP_APPOINTMENT_STORAGE';
   private appointments: Appointment[] = [];
+
   private readonly storageSubject = new BehaviorSubject<Appointment[]>(
     this.appointments
   );
+
   private readonly storage$ = this.storageSubject.asObservable();
   private readonly storage = sessionStorage;
 
+  private readonly destroy$ = new Subject<void>();
+
   constructor() {
     this.initStorage();
-    this.watchStorage();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private initStorage(): void {
@@ -33,86 +38,74 @@ export class AppointmentService {
     }
   }
 
-  private watchStorage(): void {
-    fromEvent<StorageEvent>(window, 'storage')
-      .pipe(
-        filter((event) => event.key === this.storageKey),
-        map((event) =>
-          event.newValue ? (JSON.parse(event.newValue) as Appointment[]) : null
+  add(model: Appointment): Observable<void> {
+    return new Observable<void>((observer) => {
+      model.id = this.appointments.length + 1;
+
+      if (
+        this.appointments.some((existAppointment) =>
+          this.hasOverlap(model, existAppointment)
         )
-      )
-      .subscribe((data) => {
-        if (data) {
-          this.storageSubject.next(data);
-        }
-      });
-  }
+      ) {
+        observer.error(() => new Error('Appointment has overlap'));
+        return;
+      }
 
-  add(appointment: Appointment): void {
-    appointment.id = this.appointments.length + 1;
-    appointment.fromTime = new Date(
-      getDateString(appointment.date) +
-        ' ' +
-        getTimeString(appointment.fromTime)
-    );
-    appointment.toTime = new Date(
-      getDateString(appointment.date) + ' ' + getTimeString(appointment.toTime)
-    );
+      this.appointments.push(model);
+      this.storage.setItem(this.storageKey, JSON.stringify(this.appointments));
+      this.storageSubject.next(this.appointments);
 
-    if (
-      this.appointments.some((existAppointment) =>
-        this.hasOverlap(appointment, existAppointment)
-      )
-    ) {
-      return this.openSnackBar('Appointment has overlap');
-    }
-
-    this.appointments.push(appointment);
-    this.storage.setItem(this.storageKey, JSON.stringify(this.appointments));
-    this.storageSubject.next(this.appointments);
+      observer.next();
+      observer.complete();
+    }).pipe(takeUntil(this.destroy$));
   }
 
   get(): Observable<Appointment[]> {
-    return this.storage$.pipe();
+    return this.storage$.pipe(takeUntil(this.destroy$));
   }
 
-  delete(appointment: Appointment): void {
-    this.appointments = this.appointments.filter(
-      (app) => app.id !== appointment.id
-    );
-    this.storage.setItem(this.storageKey, JSON.stringify(this.appointments));
-    this.storageSubject.next(this.appointments);
+  delete(id: number): Observable<void> {
+    return new Observable<void>((observer) => {
+      this.appointments = this.appointments.filter((app) => app.id !== id);
+      this.storage.setItem(this.storageKey, JSON.stringify(this.appointments));
+      this.storageSubject.next(this.appointments);
+      observer.next();
+      observer.complete();
+    }).pipe(takeUntil(this.destroy$));
   }
 
-  update(appointment: Appointment): boolean {
-    const index = this.appointments.findIndex(
-      (app) => app.id === appointment.id
-    );
+  update(appointment: Appointment): Observable<void> {
+    return new Observable<void>((observer) => {
+      const index = this.appointments.findIndex(
+        (app) => app.id === appointment.id
+      );
 
-    if (index === -1) {
-      return false;
-    }
+      if (index === -1) {
+        observer.error(new Error('Appointment not found'));
+        return;
+      }
 
-    if (
-      this.appointments.some((existAppointment) =>
-        this.hasOverlap(appointment, existAppointment)
-      )
-    ) {
-      this.openSnackBar('Appointment has overlap');
+      if (
+        this.appointments.some((existAppointment) =>
+          this.hasOverlap(appointment, existAppointment)
+        )
+      ) {
+        observer.error(new Error('Appointment has overlap'));
+        return;
+      }
 
-      return false;
-    }
+      const updatedAppointments = [
+        ...this.appointments.slice(0, index),
+        appointment,
+        ...this.appointments.slice(index + 1),
+      ];
 
-    const updatedAppointments = [
-      ...this.appointments.slice(0, index),
-      appointment,
-      ...this.appointments.slice(index + 1),
-    ];
-
-    this.appointments = updatedAppointments;
-    this.storage.setItem(this.storageKey, JSON.stringify(this.appointments));
-    this.storageSubject.next(this.appointments);
-    return true;
+      this.appointments = updatedAppointments;
+      this.storage.setItem(this.storageKey, JSON.stringify(this.appointments));
+      this.storageSubject.next(this.appointments);
+      observer.next();
+      observer.complete();
+    }).pipe(takeUntil(this.destroy$));
   }
 
   private hasOverlap(
@@ -132,9 +125,5 @@ export class AppointmentService {
     const earliestEnd = new Date(Math.min(aTo, bTo));
 
     return latestStart < earliestEnd;
-  }
-
-  private openSnackBar(message: string): void {
-    this._snackBar.open(message, 'Dismiss');
   }
 }
